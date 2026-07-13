@@ -4,10 +4,12 @@ using PalworldConfigurationParser.Models;
 
 List<SettingValue> supportedSettings = [
     // String Settings
-    new SettingValue("Difficulty", SettingTypes.String, EnvVars: ["DIFFICULTY"]),
-    new SettingValue("DeathPenalty", SettingTypes.String, EnvVars: ["DEATH_PENALTY"]),
     new SettingValue("ServerName", SettingTypes.BrowserDisplay, EnvVars: ["SERVER_NAME"]),
     new SettingValue("ServerDescription", SettingTypes.BrowserDisplay, EnvVars: ["SERVER_DESCRIPTION"]),
+    
+    // String Settings
+    new SettingValue("Difficulty", SettingTypes.String, EnvVars: ["DIFFICULTY"]),
+    new SettingValue("DeathPenalty", SettingTypes.String, EnvVars: ["DEATH_PENALTY"]),
     new SettingValue("PublicIP", SettingTypes.String, EnvVars: ["PUBLIC_IP"]),
     new SettingValue("BanListURL", SettingTypes.String, EnvVars: ["BAN_LIST_URL"]),
     new SettingValue("Region", SettingTypes.String, EnvVars: ["REGION"]),
