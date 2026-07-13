@@ -107,7 +107,6 @@ in-game chat auth and RCON.
 | `REST_API_PORT` | RESTAPIPort |
 | `SUPPLY_DROP_SPAN` | SupplyDropSpan |
 | `CHAT_POST_LIMIT_PER_MINUTE` | ChatPostLimitPerMinute |
-| `AUTO_SAVE_SPAN` | AutoSaveSpan |
 | `MAX_BUILDING_LIMIT_NUM` | MaxBuildingLimitNum |
 
 ### Floats
@@ -147,6 +146,7 @@ in-game chat auth and RCON.
 | `EQUIPMENT_DURABILITY_DAMAGE_RATE` | EquipmentDurabilityDamageRate |
 | `ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL` | ItemContainerForceMarkDirtyInterval |
 | `ITEM_CORRUPTION_MULTIPLIER` | ItemCorruptionMultiplier |
+| `AUTO_SAVE_SPAN` | AutoSaveSpan |
 
 ### Booleans
 

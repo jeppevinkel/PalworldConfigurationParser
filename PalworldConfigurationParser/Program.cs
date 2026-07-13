@@ -35,7 +35,6 @@ List<SettingValue> supportedSettings = [
     new SettingValue("RESTAPIPort", SettingTypes.Integer, EnvVars: ["REST_API_PORT"]),
     new SettingValue("SupplyDropSpan", SettingTypes.Integer, EnvVars: ["SUPPLY_DROP_SPAN"]),
     new SettingValue("ChatPostLimitPerMinute", SettingTypes.Integer, EnvVars: ["CHAT_POST_LIMIT_PER_MINUTE", "CHAT_POST_LIMIT"]),
-    new SettingValue("AutoSaveSpan", SettingTypes.Integer, EnvVars: ["AUTO_SAVE_SPAN"]),
     new SettingValue("MaxBuildingLimitNum", SettingTypes.Integer, EnvVars: ["MAX_BUILDING_LIMIT_NUM"]),
     
     // Float Settings
@@ -72,6 +71,7 @@ List<SettingValue> supportedSettings = [
     new SettingValue("EquipmentDurabilityDamageRate", SettingTypes.Float, EnvVars: ["EQUIPMENT_DURABILITY_DAMAGE_RATE"]),
     new SettingValue("ItemContainerForceMarkDirtyInterval", SettingTypes.Float, EnvVars: ["ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL"]),
     new SettingValue("ItemCorruptionMultiplier", SettingTypes.Float, EnvVars: ["ITEM_CORRUPTION_MULTIPLIER"]),
+    new SettingValue("AutoSaveSpan", SettingTypes.Float, EnvVars: ["AUTO_SAVE_SPAN"]),
     
     // Boolean Settings
     new SettingValue("bEnablePlayerToPlayerDamage", SettingTypes.Boolean, EnvVars: ["ENABLE_PLAYER_TO_PLAYER_DAMAGE"]),
