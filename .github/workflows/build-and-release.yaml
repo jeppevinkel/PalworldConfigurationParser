@@ -84,6 +84,7 @@ jobs:
             -p:DebugSymbols=false \
             -p:PublishTrimmed=true \
             -p:Version=${{ needs.setup.outputs.version }} \
+            -p:InformationalVersion=${{ needs.setup.outputs.version }} \
             --output ./publish/${{ matrix.target }} \
             PalworldConfigurationParser/PalworldConfigurationParser.csproj
 
