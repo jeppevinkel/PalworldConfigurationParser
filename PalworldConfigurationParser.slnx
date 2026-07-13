@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/SolutionFolder/">
+    <File Path=".github\workflows\build-and-release.yaml" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="PalworldConfigurationParser/PalworldConfigurationParser.csproj" />
+</Solution>
