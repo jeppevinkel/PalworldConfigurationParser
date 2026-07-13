@@ -58,8 +58,10 @@ jobs:
         include:
           - target: linux-x64
             artifact-name: PalworldConfigurationParser
+            output-name: PalworldConfigurationParser-linux-x64
           - target: win-x64
             artifact-name: PalworldConfigurationParser.exe
+            output-name: PalworldConfigurationParser-win-x64.exe
 
     steps:
       - uses: actions/checkout@v7
@@ -88,11 +90,14 @@ jobs:
             --output ./publish/${{ matrix.target }} \
             PalworldConfigurationParser/PalworldConfigurationParser.csproj
 
+      - name: Rename artifact
+        run: mv ./publish/${{ matrix.target }}/${{ matrix.artifact-name }} ./publish/${{ matrix.target }}/${{ matrix.output-name }}
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.target }}
-          path: ./publish/${{ matrix.target }}/${{ matrix.artifact-name }}*
+          path: ./publish/${{ matrix.target }}/${{ matrix.output-name }}
 
   Publish:
     name: Publish
