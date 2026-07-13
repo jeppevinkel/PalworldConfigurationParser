@@ -72,6 +72,8 @@ List<SettingValue> supportedSettings = [
     new SettingValue("ItemContainerForceMarkDirtyInterval", SettingTypes.Float, EnvVars: ["ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL"]),
     new SettingValue("ItemCorruptionMultiplier", SettingTypes.Float, EnvVars: ["ITEM_CORRUPTION_MULTIPLIER"]),
     new SettingValue("AutoSaveSpan", SettingTypes.Float, EnvVars: ["AUTO_SAVE_SPAN"]),
+    new SettingValue("VoiceChatMaxVolumeDistance", SettingTypes.Float, EnvVars: ["VOICE_CHAT_MAX_VOLUME_DISTANCE"]),
+    new SettingValue("VoiceChatZeroVolumeDistance", SettingTypes.Float, EnvVars: ["VOICE_CHAT_ZERO_VOLUME_DISTANCE"]),
     
     // Boolean Settings
     new SettingValue("bEnablePlayerToPlayerDamage", SettingTypes.Boolean, EnvVars: ["ENABLE_PLAYER_TO_PLAYER_DAMAGE"]),
@@ -103,6 +105,7 @@ List<SettingValue> supportedSettings = [
     new SettingValue("bAllowGlobalPalboxExport", SettingTypes.Boolean, EnvVars: ["ALLOW_GLOBAL_PALBOX_EXPORT"]),
     new SettingValue("bAllowGlobalPalboxImport", SettingTypes.Boolean, EnvVars: ["ALLOW_GLOBAL_PALBOX_IMPORT"]),
     new SettingValue("bCharacterRecreateInHardcore", SettingTypes.Boolean, EnvVars: ["CHARACTER_RECREATE_IN_HARDCORE"]),
+    new SettingValue("bEnableVoiceChat", SettingTypes.Boolean, EnvVars: ["ENABLE_VOICE_CHAT"]),
     
     // PlatformList Settings
     new SettingValue("CrossplayPlatforms", SettingTypes.PlatformList, EnvVars: ["CROSSPLAY_PLATFORMS"]),

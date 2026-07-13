@@ -147,6 +147,8 @@ in-game chat auth and RCON.
 | `ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL` | ItemContainerForceMarkDirtyInterval |
 | `ITEM_CORRUPTION_MULTIPLIER` | ItemCorruptionMultiplier |
 | `AUTO_SAVE_SPAN` | AutoSaveSpan |
+| `VOICE_CHAT_MAX_VOLUME_DISTANCE` | VoiceChatMaxVolumeDistance |
+| `VOICE_CHAT_ZERO_VOLUME_DISTANCE` | VoiceChatZeroVolumeDistance |
 
 ### Booleans
 
@@ -183,6 +185,7 @@ Accepts `true|1` / `false|0` (case-insensitive).
 | `ALLOW_GLOBAL_PALBOX_EXPORT` | bAllowGlobalPalboxExport |
 | `ALLOW_GLOBAL_PALBOX_IMPORT` | bAllowGlobalPalboxImport |
 | `CHARACTER_RECREATE_IN_HARDCORE` | bCharacterRecreateInHardcore |
+| `ENABLE_VOICE_CHAT` | bEnableVoiceChat |
 
 ### Platform list
 
