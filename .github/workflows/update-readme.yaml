@@ -12,8 +12,7 @@ on:
 jobs:
   update-readme:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    if: github.actor != 'jeppe-s-bot[bot]'
 
     steps:
       - uses: actions/create-github-app-token@v3
