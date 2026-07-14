@@ -38,10 +38,6 @@ jobs:
       - name: Generate settings table
         run: python .github/workflows/scripts/generate_readme_settings.py
 
-      - id: committer
-        run: echo "string=${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"  >> "$GITHUB_OUTPUT"
-      - run: echo "committer string is ${{ steps.committer.outputs.string }}"
-
       - name: Commit & push (if README changed)
         run: |
           git config user.name  "${{ steps.app-token.outputs.app-slug }}[bot]"
