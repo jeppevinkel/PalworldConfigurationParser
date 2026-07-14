@@ -10,7 +10,7 @@ from collections import defaultdict
 from pathlib import Path
 
 # -- Paths --------------------------------------------------------------------
-PROGRAM_CS = Path("src/Program.cs")   # ← adjust to your actual file path
+PROGRAM_CS = Path("PalworldConfigurationParser/Program.cs")
 README_MD  = Path("README.md")
 
 START_MARKER = "<!-- ENV-SETTINGS-START -->"
