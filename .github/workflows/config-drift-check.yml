@@ -1,0 +1,160 @@
+name: Palworld Config Drift Check
+
+# -----------------------------------------------------------------------------
+# Triggers
+#   Schedule: every Monday at 06:00 UTC, runs regularly so any settings
+#     added or removed by Pocketpair in a patch are caught quickly.
+#   Manual: workflow_dispatch for on-demand checks, e.g. after a major patch.
+# -----------------------------------------------------------------------------
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      fail_on_drift:
+        description: >
+          Fail the workflow when discrepancies are detected?
+          Set to false to run in report-only mode.
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+env:
+  # -- Palworld Dedicated Server - https://steamdb.info/app/2394010 ----------
+  PALWORLD_APP_ID:    '2394010'
+
+  # -- Working directories ---------------------------------------------------
+  STEAM_INSTALL_DIR:  ${{ github.workspace }}/_steamcmd
+  SERVER_INSTALL_DIR: ${{ github.workspace }}/_gameserver
+
+  # -- Drift gate: fall back to 'true' when triggered by schedule -----------
+  FAIL_ON_DRIFT: ${{ github.event.inputs.fail_on_drift || 'true' }}
+
+jobs:
+  config-drift-check:
+    name: Detect Config Drift
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # -- 1. Checkout ----------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # -- 2. Python ------------------------------------------------------------
+      # The script uses only the standard library, so no pip install is needed.
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # -- 3. SteamCMD system dependencies -------------------------------------
+      # SteamCMD is a 32-bit binary; these 32-bit compatibility libs are required
+      # on the 64-bit ubuntu-latest runner.
+      - name: Install SteamCMD system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y lib32gcc-s1 lib32stdc++6 curl tar
+
+      # -- 4. Cache SteamCMD ----------------------------------------------------
+      # Only the SteamCMD binary itself is cached, the Palworld server install
+      # is 5-12 GB, which exceeds the 10 GB Actions cache limit, so it is always
+      # freshly downloaded to guarantee up-to-date config files.
+      - name: Cache SteamCMD binary
+        id: cache-steamcmd
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STEAM_INSTALL_DIR }}
+          key: steamcmd-linux-${{ runner.os }}-v1
+
+      # -- 5. Download SteamCMD (cache miss only) -------------------------------
+      - name: Download & extract SteamCMD
+        if: steps.cache-steamcmd.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$STEAM_INSTALL_DIR"
+          curl -sSL \
+            https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz \
+            | tar -xz -C "$STEAM_INSTALL_DIR"
+          echo "SteamCMD ready at: $STEAM_INSTALL_DIR"
+
+      # -- 6. Download Palworld dedicated server --------------------------------
+      #
+      # Anonymous login is sufficient for App 2394010; no Steam account needed.
+      # +force_install_dir must be set BEFORE +login (Valve requirement).
+      # `validate` re-downloads any corrupted files, ensuring the config is intact.
+      #
+      #     Disk space note:
+      #     ubuntu-latest runners have ~14 GB free; the server download is ~5-12 GB.
+      #     This is usually sufficient. If you hit "no space left on device", add
+      #     the `maximize-build-space` action (jlumbroso/free-disk-space) before
+      #     this step to reclaim space from pre-installed tooling.
+      - name: Download Palworld server via SteamCMD (App 2394010)
+        run: |
+          mkdir -p "$SERVER_INSTALL_DIR"
+          "$STEAM_INSTALL_DIR/steamcmd.sh" \
+            +force_install_dir "$SERVER_INSTALL_DIR" \
+            +login anonymous \
+            +app_update "$PALWORLD_APP_ID" validate \
+            +quit
+
+      # -- 7. Locate DefaultPalWorldSettings.ini --------------------------------
+      #
+      # This read-only sample file ships with the server and is the canonical
+      # reference for every available setting and its default value.
+      # Using `find` future-proofs against Pocketpair moving the file between
+      # patches instead of hardcoding the path.
+      - name: Locate DefaultPalWorldSettings.ini
+        id: find-config
+        run: |
+          CONFIG_PATH=$(find "$SERVER_INSTALL_DIR" \
+            -name "DefaultPalWorldSettings.ini" \
+            | head -n 1)
+
+          if [ -z "$CONFIG_PATH" ]; then
+            echo "::error::DefaultPalWorldSettings.ini was not found in the server install."
+            {
+              echo "### DefaultPalWorldSettings.ini not found"
+              echo ""
+              echo "All \`.ini\` files present in the server install:"
+              echo '```'
+              find "$SERVER_INSTALL_DIR" -name "*.ini" | head -30
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "Found config at: $CONFIG_PATH"
+          # Export the path so the next step can pick it up via GITHUB_ENV
+          echo "CONFIG_FILE_PATH=$CONFIG_PATH" >> "$GITHUB_ENV"
+
+      # -- 8. Run the drift comparison ------------------------------------------
+      #
+      # `continue-on-error: true` allows the job to proceed to step 9 even when
+      # the script exits 1 (drift detected), so the summary is always written.
+      # The real pass/fail gate is the dedicated step below.
+      - name: Compare Program.cs settings vs config file
+        id: drift
+        env:
+          PROGRAM_CS_PATH: PalworldConfigurationParser/Program.cs
+          # CONFIG_FILE_PATH is already in the environment from step 7
+        run: python .github/workflows/scripts/check_config_drift.py
+        continue-on-error: true
+
+      # -- 9. Enforce the drift gate --------------------------------------------
+      #
+      # steps.drift.outcome reflects the script's actual exit code BEFORE
+      # continue-on-error masked it, so 'failure' == script exited 1 == drift found.
+      - name: Fail if drift detected
+        if: steps.drift.outcome == 'failure' && env.FAIL_ON_DRIFT == 'true'
+        run: |
+          echo "::error::Config drift detected between Program.cs and DefaultPalWorldSettings.ini."
+          echo "Review the job summary for the full list of discrepancies."
+          exit 1
+
+      # -- 10. Always report a clean pass ---------------------------------------
+      - name: No drift detected
+        if: steps.drift.outcome == 'success'
+        run: echo "All settings are in sync. Nothing to do."
