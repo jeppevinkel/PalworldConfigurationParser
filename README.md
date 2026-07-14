@@ -57,7 +57,7 @@ settings also accept alternative variable names for compatibility, but only the
 primary one is shown here.
 
 <!-- ENV-SETTINGS-START -->
-### BrowserDisplay 2
+### BrowserDisplay
 
 These are like strings, except they have special logic that allows them to support `"` and `|` in the values.  
 This allows a unique display on the server list as these values are not normally allowed due to the syntax of the config options.
