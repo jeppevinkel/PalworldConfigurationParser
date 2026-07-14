@@ -1,8 +1,9 @@
 name: Update README settings table
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches:
+      - main
     paths:
       - "PalworldConfigurationParser/Program.cs"
       - ".github/workflows/scripts/generate_readme_settings.py"
