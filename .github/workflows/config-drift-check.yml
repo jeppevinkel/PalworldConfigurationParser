@@ -65,7 +65,7 @@ jobs:
       # freshly downloaded to guarantee up-to-date config files.
       - name: Cache SteamCMD binary
         id: cache-steamcmd
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ env.STEAM_INSTALL_DIR }}
           key: steamcmd-linux-${{ runner.os }}-v1
