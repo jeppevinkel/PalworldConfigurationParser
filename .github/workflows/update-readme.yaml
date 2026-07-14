@@ -1,8 +1,9 @@
 name: Update README settings table
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches:
+      - main
     paths:
       - "PalworldConfigurationParser/Program.cs"
       - ".github/workflows/scripts/generate_readme_settings.py"
@@ -11,23 +12,40 @@ on:
 jobs:
   update-readme:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    if: github.actor != 'jeppe-s-bot[bot]'
 
     steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-contents: write
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.head_ref }}
 
       - name: Generate settings table
         run: python .github/workflows/scripts/generate_readme_settings.py
 
       - name: Commit & push (if README changed)
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
           git add README.md
           # Only commit when there are actual changes
-          git diff --cached --quiet \
-            && echo "No changes to commit." \
-            || git commit -m "docs: auto-update environment variable settings table [skip ci]"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "docs: auto-update environment variable settings table"
+            git push
+          fi

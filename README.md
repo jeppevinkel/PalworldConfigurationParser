@@ -83,7 +83,7 @@ This allows a unique display on the server list as these values are not normally
 ### Passwords
 
 Passwords are restricted to alphanumeric characters, dashes and underscores
-(1–30 characters). Special characters and spaces are rejected, as they can break
+(1-30 characters). Special characters and spaces are rejected, as they can break
 in-game chat auth and RCON.
 
 | Environment variable | Setting |

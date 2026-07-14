@@ -34,7 +34,7 @@ TYPE_CONFIG = [
         "### Passwords",
         (
             "Passwords are restricted to alphanumeric characters, dashes and underscores\n"
-            "(1–30 characters). Special characters and spaces are rejected, as they can break\n"
+            "(1-30 characters). Special characters and spaces are rejected, as they can break\n"
             "in-game chat auth and RCON."
         ),
     ),
@@ -132,7 +132,7 @@ def write_step_summary(section: str, changed: bool) -> None:
     if not summary_path:
         return
 
-    status = "README updated" if changed else "ℹREADME already up to date - nothing to commit"
+    status = "README updated" if changed else "README already up to date - nothing to commit"
 
     with open(summary_path, "a", encoding="utf-8") as f:
         f.write(f"**Status:** {status}\n\n")
