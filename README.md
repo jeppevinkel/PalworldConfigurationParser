@@ -56,6 +56,7 @@ Each setting below can be overridden by the listed environment variable. Some
 settings also accept alternative variable names for compatibility, but only the
 primary one is shown here.
 
+<!-- ENV-SETTINGS-START -->
 ### BrowserDisplay
 
 These are like strings, except they have special logic that allows them to support `"` and `|` in the values.  
@@ -196,3 +197,4 @@ platform is required.
 | Environment variable | Setting |
 |---|---|
 | `CROSSPLAY_PLATFORMS` | CrossplayPlatforms |
+<!-- ENV-SETTINGS-END -->

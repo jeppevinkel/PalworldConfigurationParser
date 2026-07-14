@@ -1,0 +1,33 @@
+name: Update README settings table
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "PalworldConfigurationParser/Program.cs"
+      - ".github/workflows/scripts/generate_readme_settings.py"
+      - ".github/workflows/build-and-release.yaml"
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Generate settings table
+        run: python .github/workflows/scripts/generate_readme_settings.py
+
+      - name: Commit & push (if README changed)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # Only commit when there are actual changes
+          git diff --cached --quiet \
+            && echo "No changes to commit." \
+            || git commit -m "docs: auto-update environment variable settings table [skip ci]"
+          git push
