@@ -4,6 +4,7 @@ Regenerates the environment variable settings table in README.md
 from the SettingValue definitions in Program.cs.
 """
 
+import os
 import re
 import sys
 from collections import defaultdict
@@ -124,6 +125,23 @@ def update_readme(readme: str, section: str) -> str:
     )
 
 
+# -- Step summary -------------------------------------------------------------
+def write_step_summary(section: str, changed: bool) -> None:
+    """Write the generated section to the GitHub Actions step summary, if available."""
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summary_path:
+        return
+
+    status = "README updated" if changed else "ℹREADME already up to date - nothing to commit"
+
+    with open(summary_path, "a", encoding="utf-8") as f:
+        f.write(f"**Status:** {status}\n\n")
+        f.write("---\n\n")
+        f.write("### Generated section preview\n\n")
+        f.write(section)
+        f.write("\n")
+
+
 # -- Entry point ---------------------------------------------------------------
 def main() -> None:
     if not PROGRAM_CS.exists():
@@ -145,12 +163,15 @@ def main() -> None:
     readme     = README_MD.read_text(encoding="utf-8")
     new_readme = update_readme(readme, section)
 
-    if new_readme == readme:
-        print("README.md is already up to date — nothing to commit.")
-        return
+    changed = new_readme != readme
 
-    README_MD.write_text(new_readme, encoding="utf-8")
-    print("README.md updated successfully.")
+    if changed:
+        README_MD.write_text(new_readme, encoding="utf-8")
+        print("README.md updated successfully.")
+    else:
+        print("README.md is already up to date - nothing to commit.")
+
+    write_step_summary(section, changed)
 
 
 if __name__ == "__main__":
