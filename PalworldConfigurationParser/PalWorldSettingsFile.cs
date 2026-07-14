@@ -127,7 +127,7 @@ public class PalworldSettingsFile
     /// </summary>
     public static string EncodeForServerBrowser(string display) =>
         display
-            .Replace('|', PipeLookalike)  // literal pipes -> lookalike (pending your test)
+            .Replace('|', PipeLookalike)  // literal pipes -> lookalike
             .Replace('"', '|');           // desired quotes -> pipe
 
     /// <summary>
